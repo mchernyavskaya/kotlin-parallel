@@ -4,6 +4,7 @@ import io.klogging.config.DEFAULT_CONSOLE
 import io.klogging.config.loggingConfiguration
 import io.klogging.java.LoggerFactory
 import java.time.Instant
+import java.util.concurrent.ForkJoinPool
 
 private val logger: NoCoLogger = LoggerFactory.getLogger("Main")
 fun main() {
@@ -11,18 +12,15 @@ fun main() {
         DEFAULT_CONSOLE()
         minDirectLogLevel(Level.INFO)
     }
-    val start = Instant.now()
     logger.info("Hello Parallel World!")
     logger.info("Processors: ${Runtime.getRuntime().availableProcessors()}")
-    val tasks = (1..10).map { LongRunningTask(it) }
-        .map { Thread { it.run() } }
-    logger.info("Starting all tasks")
-    tasks.forEach {
-        it.start()
-    }
-    tasks.forEach {
-        it.join()
-    }
+    logger.info("Common pool size: ${ForkJoinPool.commonPool().parallelism}")
+    val start = Instant.now()
+    (1..10).map { LongRunningTask(it) }
+        .parallelStream()
+        .forEach {
+            it.run()
+        }
     val duration = Instant.now().toEpochMilli() - start.toEpochMilli()
     logger.info("Finished all tasks in $duration ms")
 }
