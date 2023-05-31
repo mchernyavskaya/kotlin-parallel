@@ -1,5 +1,8 @@
+project.setProperty("mainClassName", "MainKt")
+
 plugins {
     kotlin("jvm") version "1.8.21"
+    id("com.github.johnrengelman.shadow") version "6.0.0"
     application
 }
 
@@ -22,6 +25,16 @@ tasks.test {
 
 kotlin {
     jvmToolchain(11)
+}
+
+tasks.jar {
+    manifest {
+        attributes["Main-Class"] = "MainKt"
+    }
+}
+
+tasks.findByName("shadowJar")!!.apply {
+    this.dependsOn(tasks.jar)
 }
 
 application {

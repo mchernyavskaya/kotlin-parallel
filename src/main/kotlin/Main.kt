@@ -6,7 +6,7 @@ import io.klogging.java.LoggerFactory
 import java.time.Instant
 
 private val logger: NoCoLogger = LoggerFactory.getLogger("Main")
-fun main(args: Array<String>) {
+fun main() {
     loggingConfiguration {
         DEFAULT_CONSOLE()
         minDirectLogLevel(Level.INFO)
